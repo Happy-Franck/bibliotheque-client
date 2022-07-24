@@ -33,9 +33,7 @@
 
             <label for="role">Role :</label>
             <select v-model="role">
-              <option value="idadmin">Admin</option>
-              <option value="idLivreur">Livreur</option>
-              <option value="idUser">User</option>
+              <option v-for="r in roles" :key="r.id" :value="r._id">{{r.name}}</option>
             </select>
 
             <button class="btn-primary">Créer le compte</button>
@@ -69,18 +67,29 @@ export default defineComponent({
       tel: '',
       adresse: '',
       role: '',
+      roles: []
     }
+  },
+  created(){
+    const test = axios.get("http://localhost:3000/role/get").then(
+      (response) => {
+        if (response){
+          console.log(response)
+          this.roles = response.data
+        }
+      }
+    )
   },
   methods: {
     connexion(){
       console.log("ok")
-      axios.post('http://localhost:9000/perso/create',{
-        email : 'this.email',
-        password : 'this.password',
-        pseudo : 'this.pseudo',
-        tel : 'this.tel',
-        adresse : 'this.adresse',
-        role : 'this.role',
+      axios.post("http://localhost:3000/perso/create",{
+        email : this.email,
+        password : this.password,
+        pseudo : this.pseudo,
+        tel : this.tel,
+        adresse : this.adresse,
+        role : this.role,
         photo : 'no image'
       }).then(
         (response) => {
@@ -89,7 +98,7 @@ export default defineComponent({
           }
         }
       )
-      console.log("ko")
+    console.log("ko")
     },
     closeAlert(){
       this.alert = false
