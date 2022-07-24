@@ -1,13 +1,16 @@
 <template>
   <div class="login mt-5">
-		<div class="box">
+    <div class="box">
+      <div class="img-fond">
+        <img src="@/assets/img/fond.jpg"/>
+      </div>
       <div class="formulaire">
         <div class="title">
-          <h3>Inscription</h3>
+          <h3>Connexion</h3>
         </div>
         <div class="content">
-          <div class="alert" v-if="alert === true">
-            Pseudo déjà pris
+          <div v-if="msg != '' && alert == true" class="alert">
+            {{msg}}
             <span @click="closeAlert()">x</span>
           </div>
           <form @submit.prevent="connexion()">
@@ -17,94 +20,39 @@
             <label for="password">Mot de passe :</label>
             <input v-model="password" id="password" type="password" placeholder="Password"/>
 
-            <div class="duo">
-              <div class="form-group">
-                <label for="pseudo">Pseudo :</label>
-                <input v-model="pseudo" id="pseudo" type="text" placeholder="Pseudo"/>
-              </div>
-              <div class="form-group">
-                <label for="tel">Téléphone :</label>
-                <input v-model="tel" id="tel" type="number" min="0" placeholder="03* ** *** **"/>
-              </div>
-            </div>
-
-            <label for="adresse">Adresse :</label>
-            <input v-model="adresse" id="adresse" type="text" placeholder="Ton adresse..."/>
-
-            <label for="role">Role :</label>
-            <select v-model="role">
-              <option v-for="r in roles" :key="r.id" :value="r._id">{{r.name}}</option>
-            </select>
-
-            <button class="btn-primary">Créer le compte</button>
+            <button class="btn-primary">Connexion</button>
           </form>
         </div>
       </div>
-      <div class="img-fond">
-        <img src="@/assets/img/fond.jpg"/>
-      </div>
 		</div>
   </div>
-<!-- -CreatePersonne : fonction pour créer une personne
-        *url: http://localhost:8081/perso/create
-        *data request: {pseudo: string,email: string,password: string,photo: string,tel: string,adresse: string, role: string}
-        *type request: post
-        *parameters url: none
-        *return: status400 {message: "Des éléments sont vides!"},status201 {message: "creation reussite"},status500 {message: error} -->
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
-import axios from 'axios';
+import http from '@/axios';
 
 export default defineComponent({
   name: "LoginView",
   data(){
     return{
+      msg: '',
       alert: false,
       email: '',
       password: '',
-      pseudo: '',
-      tel: '',
-      adresse: '',
-      role: '',
-      roles: []
     }
-  },
-  created(){
-    const test = axios.get("http://localhost:3000/role/get").then(
-      (response) => {
-        if (response){
-          console.log(response)
-          this.roles = response.data
-        }
-      }
-    )
   },
   methods: {
     connexion(){
-      console.log("ok")
-      axios.post("http://localhost:3000/perso/create",{
-        email : this.email,
-        password : this.password,
-        pseudo : this.pseudo,
-        tel : this.tel,
-        adresse : this.adresse,
-        role : this.role,
-        photo : 'no image'
-      }).then(
-        (response) => {
-          if(response){
-            console.log(response)    
-          }
-        }
-      )
-    console.log("ko")
-    },
-    closeAlert(){
-      this.alert = false
+      http.post("/perso/login", {
+        email: this.email,
+        password: this.password
+      }).then((response) => {
+        console.log(response.data.token)
+        localStorage.setItem('token', response.data.token)
+      })
     }
   }
-});
+})
 </script>
 <style scoped>
 .login .box{
@@ -114,7 +62,7 @@ export default defineComponent({
   justify-content: space-between;
 }
 .login .box .formulaire{
-  width: 50%;
+  width: 45%;
 	padding: 45px;
   padding-bottom: 0;
 }
@@ -171,12 +119,12 @@ export default defineComponent({
   margin-bottom: 4px;
 }
 .login .box .img-fond{
-  width: 50%;
-  height: 625px;
+  width: 55%;
+  height: 500px;
 }
 .login .box .img-fond img{
   width: 100%;
-  height: 625px;
+  height: 500px;
   object-fit: cover;
 }
 /* Medium devices (tablets, 768px and up)*/
