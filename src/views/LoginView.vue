@@ -47,9 +47,18 @@ export default defineComponent({
         email: this.email,
         password: this.password
       }).then((response) => {
-        console.log(response.data.token)
-        localStorage.setItem('token', response.data.token)
+        if(response.data.token){
+          localStorage.setItem('token', response.data.token)
+          this.$router.push('/admin/livres')
+        }
+      }).catch((err) => {
+        this.msg = err.response.data.message
+        this.alert = true
       })
+    },
+    closeAlert(){
+      this.alert = false
+      this.msg = ''
     }
   }
 })
