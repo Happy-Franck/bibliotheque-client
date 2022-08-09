@@ -12,30 +12,25 @@
           </div>
           <form @submit.prevent="register()">
             <label for="email">Email :</label>
-            <input v-model="email" id="email" type="email" placeholder="Email"/>
+            <input required v-model="email" id="email" type="email" placeholder="Email"/>
 
             <label for="password">Mot de passe :</label>
-            <input v-model="password" id="password" type="password" placeholder="Password"/>
+            <input required v-model="password" id="password" type="password" placeholder="Password"/>
 
             <div class="duo">
               <div class="form-group">
                 <label for="pseudo">Pseudo :</label>
-                <input v-model="pseudo" id="pseudo" type="text" placeholder="Pseudo"/>
+                <input required v-model="pseudo" id="pseudo" type="text" placeholder="Pseudo"/>
               </div>
               <div class="form-group">
                 <label for="tel">Téléphone :</label>
-                <input v-model="tel" id="tel" type="number" min="0" placeholder="03* ** *** **"/>
+                <input required v-model="tel" id="tel" type="number" min="0" placeholder="03* ** *** **"/>
               </div>
             </div>
 
             <label for="adresse">Adresse :</label>
-            <input v-model="adresse" id="adresse" type="text" placeholder="Ton adresse..."/>
-
-            <label for="role">Role :</label>
-            <select v-model="role">
-              <option v-for="r in roles" :key="r.id" :value="r._id">{{r.name}}</option>
-            </select>
-
+            <input required v-model="adresse" id="adresse" type="text" placeholder="Ton adresse..."/>
+            
             <button class="btn-primary">Créer le compte</button>
           </form>
         </div>
@@ -45,12 +40,6 @@
       </div>
 		</div>
   </div>
-<!-- -CreatePersonne : fonction pour créer une personne
-        *url: http://localhost:8081/perso/create
-        *data request: {pseudo: string,email: string,password: string,photo: string,tel: string,adresse: string, role: string}
-        *type request: post
-        *parameters url: none
-        *return: status400 {message: "Des éléments sont vides!"},status201 {message: "creation reussite"},status500 {message: error} -->
 </template>
 <script lang="ts">
 import { defineComponent } from "vue";
@@ -76,13 +65,19 @@ export default defineComponent({
       (response) => {
         if (response){
           this.roles = response.data
+          for(let i= 0; i < this.roles.length; i++){
+            if(this.roles[i].name == 'user'){
+              this.role = this.roles[i]._id
+            }
+          }
         }
       }
     )
   },
   methods: {
     register(){
-      http.post("/perso/create",{
+      http.post("/perso/create",
+      {
         email : this.email,
         password : this.password,
         pseudo : this.pseudo,
@@ -92,9 +87,19 @@ export default defineComponent({
         photo : 'no image'
       }).then(
         (response) => {
-          if(response){
+          if(response.data.message){
             this.msg = response.data.message 
             this.alert = true
+          }
+          else if(response.data.msgemail){
+            this.msg = response.data.msgemail
+            this.alert = true
+          }
+        }
+      ).catch(
+        (error) => {
+          if(error){
+            console.log(error)
           }
         }
       )
@@ -191,5 +196,8 @@ export default defineComponent({
   .register .box .img-fond{
     display: none;
   }
+}
+.role{
+  visibility: hidden;
 }
 </style>

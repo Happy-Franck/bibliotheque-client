@@ -14,6 +14,18 @@
                     <p v-else-if="livre.status == 2"><b>Status : </b>Vente normal</p>
                     <p v-else-if="livre.status == 3"><b>Status : </b>Epuisement de stock</p>
                     <p><b>Stock : </b>{{livre.stock}}</p>
+                    <p>
+                        <b>Catégorie : </b>
+                        <span v-for="i in categories" :key="i._id">
+                            <i v-if="livre.categorie == i._id">{{i.type}}</i>
+                        </span>
+                    </p>
+                    <div class="action">
+                        <router-link :to="{name: 'livreEdit', params: {id: router.params.id}}">
+                            <button>Modifier</button>
+                        </router-link>
+                        <button @click="supprimer">Supprimer</button>
+                    </div>
                 </div>
                 <div class="footer"></div>
             </div>
@@ -24,6 +36,7 @@
 import { defineComponent , reactive, toRefs } from 'vue'
 import { useRoute } from 'vue-router'
 import Livre from '@/types/Livre'
+import Category from '@/types/Category'
 import http from '@/axios'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 
@@ -35,23 +48,48 @@ export default defineComponent({
     setup(){
         const router = useRoute()
         const state = reactive({
-            livre: [] as Livre[]
+            livre: [] as Livre[],
+            categories: [] as Category[]
         })
-        const getLivre = () => {
-            http.get("/livre/get/"+router.params.id ,{ 
+        http.get('/categorie/get',
+        { 
+            headers : {
+                "x-access-token" : localStorage.getItem('token')
+            }
+        }).then(
+            (response)=>{
+                state.categories = response.data
+            }
+        ).catch(
+            (error)=>{
+                console.log(error)
+            }
+        );
+        http.get("/livre/get/"+router.params.id ,{ 
+                headers : {
+                    "x-access-token" : localStorage.getItem('token')
+                }
+            }).then(
+            (response) => {
+                if (response){
+                    state.livre = response.data
+                }
+            }
+        )
+        function supprimer(){
+            http.delete("/livre/delete/"+router.params.id ,{ 
                     headers : {
                         "x-access-token" : localStorage.getItem('token')
                     }
                 }).then(
                 (response) => {
-                    if (response){
-                        state.livre = response.data
+                    if (response.data.message){
+                        this.$router.push({path :'/admin/livres' , })
                     }
                 }
             )
         }
-        getLivre();
-        return { router , ...toRefs(state) }
+        return { router , ...toRefs(state) , supprimer }
     }
 })
 </script>
@@ -87,6 +125,21 @@ export default defineComponent({
     .livreitem .livre .info h2{
         text-align: center;
         margin-bottom: 25px;
+    }
+    .livreitem .livre .info .action a {
+        text-decoration: none;
+    }
+    .livreitem .livre .info .action button{
+        margin-bottom: 15px;
+        background: white;
+        color: #6b53e0;
+        border: 1px solid #6b53e083;
+        outline: none;
+        width: 100%;
+        height: 47px;
+        padding: 15px;
+        border-radius: 3px;
+        cursor: pointer;
     }
     @media (max-width: 768px){
         .livreitem .livre .couverture{

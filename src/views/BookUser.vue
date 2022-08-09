@@ -3,7 +3,6 @@
         <div class="box">
             <div class="header">
                 <h3>Liste des Livres</h3>
-                <router-link to="/admin/livres/ajout">Ajouter</router-link>
             </div>
             <div class="content">
                 <LivreList :livres="livres"/>
@@ -19,7 +18,7 @@ import Livre from '@/types/Livre'
 import http from '@/axios';
 
 export default defineComponent({
-    name: 'LivreView',
+    name: 'BookUser',
     components: {
         LivreList
     },
@@ -46,43 +45,3 @@ export default defineComponent({
     }
 })
 </script>
-
-<style scoped>
-    .box{
-        background-color: white;
-        margin: 30px;
-        padding: 50px 50px 0px 50px;
-        display: flex;
-        flex-direction: column;
-    }
-    .box .header{
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .box .header a{
-        color: white;
-        text-decoration: none;
-        padding: 10px 20px;
-        background-image: linear-gradient(to right, #6a53e0, #937ce9);
-    }
-    .box .title h3{
-        margin: 0;
-        padding-bottom: 40px; 
-        font-size: 24px;
-    }
-    .box .content{
-        display: flex;
-        flex-wrap: wrap;
-    }
-    
-    .box .footer{
-        margin-top: 25px;
-        width: 60%;
-        height: 8px;
-        background-image: linear-gradient(to right, #6a53e0, #937ce9);
-        align-self: center;
-        border-top-left-radius: 5px;
-        border-top-right-radius: 5px;
-    }
-</style>

@@ -16,7 +16,10 @@
                             { rose: user.role == '62dd728ba9a8e2718ec3ddb0'},
                             { bleu: user.role == '62dd72a1a9a8e2718ec3ddb2'}]"
                         >{{ user.pseudo }}</h4>
-						<p>{{ user.pseudo }}</p>
+						<p>{{ user.email }}</p>
+                        <router-link :to="{name: 'membresEdit', params: {id: user._id}}">
+                            voir
+                        </router-link>
 					</div>
 				</div>
 			</div>

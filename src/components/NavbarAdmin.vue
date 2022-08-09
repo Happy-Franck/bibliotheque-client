@@ -1,14 +1,23 @@
 <template>
     <div class="navbaradmin">
         <div class="sidebar" :class="[{nepasafficher : afficher == false}]">
-            <div class="photo" :class="[{nepasafficher : afficher == false}]">
-                <img src="@/assets/img/user.jpeg"/>
-            </div>
+            <router-link to="/admin/profil">
+                <div class="photo" :class="[{nepasafficher : afficher == false}]">
+                    <img src="@/assets/img/user.jpeg"/>
+                    <span>{{user.pseudo}}</span>
+                </div>
+            </router-link>
             <ul>
                 <router-link to="/admin/membres">
                     <li>
                         <span>0</span>
                         <p>Membres</p>
+                    </li>
+                </router-link>
+                <router-link to="/admin/categories">
+                    <li>
+                        <span>0</span>
+                        <p>Catégories</p>
                     </li>
                 </router-link>
                 <router-link to="/admin/livres">
@@ -48,6 +57,16 @@ export default defineComponent({
             afficher: true
         }
     },
+    computed: {
+        /*setup(){
+            const user = computed(function(){
+                return this.$store.getters.getUser
+            })
+        }*/
+        user: function(){
+            return this.$store.getters.getUser
+        }
+    },
     methods: {
         chercher(){
             alert("Vous avez cherché "+this.searchTerm)
@@ -55,6 +74,7 @@ export default defineComponent({
         deconnexion(){
             localStorage.clear();
             this.$router.push('/login');
+            this.$store.commit('setUserMutation', {})
         },
         toggleSidebar(){
             this.afficher = !this.afficher
@@ -85,9 +105,14 @@ export default defineComponent({
     .navbaradmin .sidebar .photo{
         width: 100%;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
         margin-bottom: 25px;
         margin-top: 50px;
+    }
+    .navbaradmin .sidebar .photo span{
+        color: white;
+        margin-top: 15px;
     }
     .navbaradmin .sidebar .photo img{
         border: 2px solid white;
@@ -102,6 +127,9 @@ export default defineComponent({
         height: 40px;
         border-radius: 50%;
         object-fit: cover;
+    }
+    .navbaradmin .sidebar .photo.nepasafficher span{
+        display: none;
     }
     .navbaradmin .sidebar ul{
         padding: 0;
@@ -164,6 +192,9 @@ export default defineComponent({
 
     @media (max-width: 576px){}
     @media (max-width: 992px) {
+        .navbaradmin .sidebar .photo span{
+            display: none;
+        }
         .navbaradmin .sidebar{
             visibility: visible;
             width: 20%;

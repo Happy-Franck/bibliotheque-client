@@ -4,6 +4,7 @@ interface Livre{
     prix: number,
     prix_promo: number,
     status: number,
-    stock: number
+    stock: number,
+    categorie: number
 }
 export default Livre;

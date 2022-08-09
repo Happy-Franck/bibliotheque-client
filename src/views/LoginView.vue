@@ -47,9 +47,18 @@ export default defineComponent({
         email: this.email,
         password: this.password
       }).then((response) => {
-        if(response.data.token){
+        if(response.data){
+          this.$store.dispatch('setUser', response.data.user)
+          this.$store.dispatch('setRole', response.data.role)
+          //this.$store.commit('setUserMutation', response.data.user)
+          localStorage.setItem('role', response.data.role.name)
           localStorage.setItem('token', response.data.token)
-          this.$router.push('/admin/livres')
+          if(localStorage.getItem('role')  == 'admin'){
+            this.$router.push('/admin/livres')
+          }
+          if(localStorage.getItem('role') == 'user'){
+            this.$router.push('/user/livres')
+          }
         }
       }).catch((err) => {
         this.msg = err.response.data.message

@@ -70,6 +70,8 @@ export default defineComponent({
 .livrelist .card-item .card{
     position: relative;
     width: 100%;
+    display: flex;
+    flex-direction: column;
 }
 .livrelist .card-item .card .card-image{
     width: 100%;
@@ -86,9 +88,10 @@ export default defineComponent({
     transform: scale(1.2) rotateZ(2deg);
 }
 .livrelist .card-item .card .card-body{
-    height: 70px;
+    height: 50px;
     padding: 15px;
     padding-bottom: 0px;
+    overflow: hidden;
 }
 .livrelist .card-item .card .card-body .info{
     height: 65%;
@@ -108,24 +111,22 @@ export default defineComponent({
     width: 40%;
     text-align: right;
 }
-.livrelist .card-item .card .card-body .border-container{
+.livrelist .card-item .card .border-container{
     width: 100%;
     display: flex;
     justify-content: center;
 }
-.livrelist .card-item .card .card-body .border-container .border{
-    width: 0%;
+.livrelist .card-item .card .border-container .border{
+    width: 20%;
     height: 4px;
-    background: red;
     transition: 500ms;
     background-image: linear-gradient(to right, #6a53e0, #937ce9);
     align-self: center;
     border-top-left-radius: 2px;
     border-top-right-radius: 2px;
+    margin-top: 15px;
 }
-.livrelist .card-item .card:hover .card-body .border-container .border{
-    width: 18%;
-    position: relative;
-    bottom: 0;
+.livrelist .card-item .card:hover .border-container .border{
+    width: 100%;
 }
 </style>
